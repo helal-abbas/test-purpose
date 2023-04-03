@@ -1,0 +1,148 @@
+import './App.css';
+import react, { useEffect, useState } from 'react';
+import { RouterProvider} from 'react-router-dom';
+import router from './Route'
+function App() {
+  const [list, setList] = useState(null)
+  const [listSecond, setListSecond] = useState(null)
+  const responseHandler = async () => {
+    const response= await fetch('https://restcountries.com/v3.1/all')
+      .then((res) => {
+        return res.json()
+      })
+      // setList(response)
+      // setListSecond(response)
+      // setList(response)
+      const country = response.map((ele,index) => {
+        console.log(index)
+       
+        return{country: ele.name.common, flags: ele.flags.png}
+        
+      })
+      console.log("MONET", country)
+      setList(country)
+      // setListSecond(country)
+
+      // setList(response)
+  }
+  useEffect(() => {
+    responseHandler()
+  },[])
+
+  const changeHandler = (e) => {
+    const country = e.target.value.toLowerCase()
+    if(country) {
+    const filterList = listSecond.filter((ele) => {
+      if(ele.country.toLowerCase().includes(country)) {
+        return ele
+      }
+    });
+    
+    setList(filterList)
+  }else {
+    setList(listSecond)
+  }
+
+   
+  }
+
+
+  const sortHandler= (type) => {
+    // console.log(type.target.value)
+    if(type.target.value === "asc") {
+      console.log('aceessding order',list)
+      const sort = list.sort((a,b) => {
+        
+     console.log(a.country, a.flags);
+     if(a.country && b.country){
+      const a1 = a?.country.toLowerCase()
+      const a2 = b?.country?.toLowerCase()
+      if (a1 <  a2) {
+        return -1;
+    }
+    if (a1 > a2) {
+        return 1;
+    }
+    
+    return 0;
+  }
+    });
+    
+      console.log(sort)
+      setList(prev => [...prev, sort]);
+    }else if(type.target.value === "desc") {
+      console.log('decending order',list)
+      const sort = list.sort((a,b,index) => {
+        // console.log(index)
+        if(a.country && b.country) {
+        const a1 = a?.country.toLowerCase()
+        const a2 = b?.country.toLowerCase()
+        if (a1 >  a2) {
+          return -1;
+        }
+        if (a1 < a2) {
+          
+          return 1;
+       }
+        return 0;
+      }
+      });
+      
+      setList([])
+      setList(sort);
+      // changeHook(sort)
+    }
+    
+   }
+   const changeHook = (sort) => {
+    setList(prev => [...prev, sort]);
+   }
+  return (
+    <div className="App">
+     
+
+      {/* <Router>
+      <Morecomponent path='/'>
+        <Action path='action' />
+        <Portfolio path='port' />
+      </Morecomponent> */}
+      {/* <Routes>
+      <Route path="/" element={<Navigator />} />
+      
+     
+        <Route exact path="/action" element ={<Action />} />
+        <Route path="/port" element={<Portfolio />} />
+      </Routes> */}
+    {/* </Router>     */}
+    {/* <div className="App">
+      <RouterProvider router={router} />
+    </div> */}
+    <input placeholder='Search Country Here' onChange={(e) => changeHandler(e)}></input>
+    <form>
+            <input type="radio" value="asc" id="asc"
+              name="sorting" onChange={(e) => sortHandler(e)} />
+            <label for="asc">Accending Order</label>
+
+            <input type="radio" value="desc" id="desc"
+              name="sorting" onChange={(e) => sortHandler(e)} />
+            <label for="desc">Decending Order</label>
+        </form>
+
+    {
+      list && list.map((ele) => (
+        <>
+        <div>
+        {ele.country }      <img src={ele.flags} style={{ height: "20px" }}  />
+          </div>
+          <div>
+            
+         
+          </div>
+          </>
+      ))
+    }
+    </div>
+  );
+}
+
+export default App;
