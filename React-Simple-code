@@ -1,0 +1,109 @@
+import './App.css';
+import react, { useEffect, useState } from 'react';
+import { RouterProvider} from 'react-router-dom';
+import router from './Route'
+function App() {
+  const [list, setList] = useState(null)
+  const [listSecond, setListSecond] = useState(null)
+  const [country,setCountry] = useState(null)
+  const responseHandler = async () => {
+    const response= await fetch('https://restcountries.com/v3.1/all')
+      .then((res) => {
+        return res.json()
+      })
+      // setList(response)
+      // setListSecond(response)
+      // setList(response)
+      const country = response.map((ele) => {
+        return{country: ele.name.common, flags: ele.flags.png}
+      })
+      setList(country)
+      setListSecond(country)
+
+      // setList(response)
+  }
+  useEffect(() => {
+    responseHandler()
+  },[])
+
+  const changeHandler = (e) => {
+    const country = e.target.value.toLowerCase()
+    if(country) {
+    const filterList = list.filter((ele) => {
+      if(ele.country.toLowerCase().includes(country)) {
+        return ele
+      }
+    });
+    
+    setList(filterList)
+  }else {
+    setList(listSecond)
+  }
+
+   
+  }
+
+
+  
+
+  const sortHandler= (type) => {
+    let sort;
+  if(type === 'asc') {
+    sort  = list.sort((a,b) => a-b)
+   
+  }else {
+    sort  = list.sort((a,b) => b-a) 
+  }
+  console.log(sort)
+  setList(sort)
+   }
+
+  return (
+    <div className="App">
+     
+
+      {/* <Router>
+      <Morecomponent path='/'>
+        <Action path='action' />
+        <Portfolio path='port' />
+      </Morecomponent> */}
+      {/* <Routes>
+      <Route path="/" element={<Navigator />} />
+      
+     
+        <Route exact path="/action" element ={<Action />} />
+        <Route path="/port" element={<Portfolio />} />
+      </Routes> */}
+    {/* </Router>     */}
+    {/* <div className="App">
+      <RouterProvider router={router} />
+    </div> */}
+    <input placeholder='Search Country Here' onChange={(e) => changeHandler(e)}></input>
+    <form>
+            <input type="radio" value="male" id="male"
+              name="gender" onClick={(e) => sortHandler('asc')} />
+            <label for="male">Accending Order</label>
+
+            <input type="radio" value="female" id="female"
+              name="gender" onClick={(e) => sortHandler('desc')} />
+            <label for="female">Decending Order</label>
+        </form>
+
+    {
+      list && list.map((ele) => (
+        <>
+        <div>
+          {ele.country }      <img src={ele.flags} alt='No Image' />
+          </div>
+          <div>
+            
+         
+          </div>
+          </>
+      ))
+    }
+    </div>
+  );
+}
+
+export default App;
