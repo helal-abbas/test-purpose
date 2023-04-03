@@ -29,7 +29,7 @@ function App() {
   const changeHandler = (e) => {
     const country = e.target.value.toLowerCase()
     if(country) {
-    const filterList = list.filter((ele) => {
+    const filterList = listSecond.filter((ele) => {
       if(ele.country.toLowerCase().includes(country)) {
         return ele
       }
@@ -93,7 +93,7 @@ function App() {
       list && list.map((ele) => (
         <>
         <div>
-          {ele.country }      <img src={ele.flags} alt='No Image' />
+          {ele.country }      <img src={ele.flags} style={{ height: "20px" }}  />
           </div>
           <div>
             
